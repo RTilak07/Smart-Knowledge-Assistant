@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Knowledge Assistant</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #2c5364;
+            color: white;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 40px;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        input {
+            width: 60%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            background: #764ba2;
+            color: white;
+            cursor: pointer;
+        }
+
+        .card {
+            margin: 30px auto;
+            width: 60%;
+            padding: 20px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🤖 Smart Knowledge Assistant</h1>
+
+    <div class="container">
+        <input type="text" id="urlInput" placeholder="Enter Website URL">
+        <br>
+        <button onclick="analyze()">Analyze Website</button>
+    </div>
+
+    <div class="card">
+        <h2>Summary</h2>
+        <p id="summaryText">---</p>
+    </div>
+
+    <div class="card">
+        <h2>Ask Question</h2>
+        <input type="text" id="questionInput" placeholder="Enter question">
+        <br>
+        <button onclick="getAnswer()">Get Answer</button>
+        <p id="answerText"></p>
+    </div>
+
+<script>
+
+async function analyze() {
+    let url = document.getElementById("urlInput").value;
+
+    document.getElementById("summaryText").innerText = "Loading...";
+
+    let res = await fetch("http://127.0.0.1:8000/analyze", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ url: url })
+    });
+
+    let data = await res.json();
+
+    document.getElementById("summaryText").innerText = data.summary;
+}
+
+
+async function getAnswer() {
+    let question = document.getElementById("questionInput").value;
+
+    document.getElementById("answerText").innerText = "Loading...";
+
+    let res = await fetch("http://127.0.0.1:8000/ask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question: question })
+    });
+
+    let data = await res.json();
+
+    document.getElementById("answerText").innerText = data.answer;
+}
+
+</script>
+
+</body>
+</html>
